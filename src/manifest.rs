@@ -7,8 +7,6 @@ pub struct Manifest {
     content: toml::Value,
 }
 
-const PACKAGE_TABLE: &str =  "package";
-
 impl Manifest {
     pub fn to_string_toml_like(&self) -> Result<String, Error> {
         match toml::to_string(&self.content) {
@@ -19,8 +17,8 @@ impl Manifest {
         }
     }
 
-    pub fn get(&self, field: &str) -> Result<String, Error> {
-        let package = match self.content.get(PACKAGE_TABLE) {
+    pub fn get(&self, table: &str, field: &str) -> Result<String, Error> {
+        let package = match self.content.get(table) {
             Some(v) => Ok(v),
             None => Err(Error::new("File root is in a unexpected format"))
         }?;
@@ -36,8 +34,8 @@ impl Manifest {
         })
     }
 
-    pub fn set(&mut self, field: &str, value: &str) -> Result<toml::Value, Error> {
-        let package = match self.content.get_mut(PACKAGE_TABLE) {
+    pub fn set(&mut self, table: &str, field: &str, value: &str) -> Result<toml::Value, Error> {
+        let package = match self.content.get_mut(table) {
             Some(v) => Ok(v),
             None => Err(Error::new("File root is in a unexpected format"))
         }?;

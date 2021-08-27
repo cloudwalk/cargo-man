@@ -1,5 +1,5 @@
 [dependencies]
-clap = "3.0.0-beta.2"
+clap = "2.33.3"
 serde = "1.0.126"
 serde_derive = "1.0.126"
 toml = "0.5.8"
@@ -7,6 +7,6 @@ toml = "0.5.8"
 [package]
 edition = "2018"
 name = "cargo-man"
-version = "0.0.1"
+version = "0.0.2"
 license = "MIT"
 description = "CLI tool to improve Cargo file management."
