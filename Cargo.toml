@@ -7,6 +7,6 @@ toml = "0.5.8"
 [package]
 edition = "2018"
 name = "cargo-man"
-version = "0.0.2"
+version = "0.0.3"
 license = "MIT"
 description = "CLI tool to improve Cargo file management."
