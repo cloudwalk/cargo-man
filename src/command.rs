@@ -15,7 +15,7 @@ pub fn start_command() -> Opts {
     let matches = App::new("Cargo man")
         .subcommand(
             App::new("man")
-                .version("0.0.3")
+                .version("0.0.4")
                 .author("CloudWalk <cloudwalk@cloudwalk.io>")
                 .about("Manage cargo file information")
                 .arg(
