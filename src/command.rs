@@ -52,22 +52,31 @@ pub fn start_command() -> Opts {
         )
         .get_matches();
 
+    if let Some(mtc) = matches.subcommand_matches("man") {
+        return Opts {
+            path: match mtc.value_of("path") {
+                Some(t) => t.to_string(),
+                None => DEFAULT_PATH.to_string(),
+            },
+            table: match mtc.value_of("table") {
+                Some(t) => t.to_string(),
+                None => DEFAULT_TABLE.to_string(),
+            },
+            field: match mtc.value_of("field") {
+                Some(t) => Some(t.to_string()),
+                None => None,
+            },
+            set: match mtc.value_of("set") {
+                Some(t) => Some(t.to_string()),
+                None => None,
+            },
+        };
+    }
+
     Opts {
-        path: match matches.value_of("path") {
-            Some(t) => t.to_string(),
-            None => DEFAULT_PATH.to_string(),
-        },
-        table: match matches.value_of("table") {
-            Some(t) => t.to_string(),
-            None => DEFAULT_TABLE.to_string(),
-        },
-        field: match matches.value_of("field") {
-            Some(t) => Some(t.to_string()),
-            None => None,
-        },
-        set: match matches.value_of("set") {
-            Some(t) => Some(t.to_string()),
-            None => None,
-        },
+        path: DEFAULT_PATH.to_string(),
+        table: DEFAULT_TABLE.to_string(),
+        field: None,
+        set: None,
     }
 }
