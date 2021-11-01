@@ -30,6 +30,7 @@ pub fn bump(manifest: &mut Manifest, path: String, kind_str: String) -> Result<S
     handle::write(manifest, table, path, field, new_version.clone())?;
     update_lock()?;
     commit(new_version.clone())?;
+    push()?;
     Ok(new_version)
 }
 
@@ -76,6 +77,16 @@ fn commit(version: String) -> Result<(), Error> {
 
     let output = Command::new("git")
         .args(["tag", "-a", version.as_str(), "-m", commit_msg.as_str()])
+        .output()
+        .expect("process failed to execute");
+    io::stdout().write_all(&output.stdout).unwrap();
+    io::stderr().write_all(&output.stderr).unwrap();
+    Ok(())
+}
+
+fn push() -> Result<(), Error> {
+    let output = Command::new("git")
+        .args(["push", "--follow-tags"])
         .output()
         .expect("process failed to execute");
     io::stdout().write_all(&output.stdout).unwrap();
