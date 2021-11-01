@@ -2,8 +2,11 @@
 clap = "2.33.3"
 serde = "1.0.126"
 serde_derive = "1.0.126"
-toml = { version = "0.5.8", features = ["preserve_order"] }
 itertools = "0.10.1"
+
+[dependencies.toml]
+version = "0.5.8"
+features = ["preserve_order"]
 
 [package]
 edition = "2018"
