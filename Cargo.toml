@@ -2,7 +2,7 @@
 clap = "2.33.3"
 serde = "1.0.126"
 serde_derive = "1.0.126"
-toml = "0.5.8"
+toml = { version = "0.5.8", features = ["preserve_order"] }
 itertools = "0.10.1"
 
 [package]
