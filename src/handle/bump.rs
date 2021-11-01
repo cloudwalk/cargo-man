@@ -22,7 +22,7 @@ pub fn bump(manifest: &mut Manifest, path: String, kind_str: String) -> Result<S
     let current_version = handle::read(manifest.clone(), table.clone(), field.clone())?;
 
     let tpl: (String, String, String) = current_version
-        .split(".")
+        .split('.')
         .map(|x| x.to_string())
         .collect_tuple()
         .unwrap();
@@ -59,6 +59,7 @@ fn update_lock() -> Result<(), Error> {
 }
 
 fn commit(version: String) -> Result<(), Error> {
+    let commit_msg = format!("\"Release {}\"", version);
     let output = Command::new("git")
         .args(["add", "Cargo.toml", "Cargo.lock"])
         .output()
@@ -67,13 +68,14 @@ fn commit(version: String) -> Result<(), Error> {
     io::stderr().write_all(&output.stderr).unwrap();
 
     let output = Command::new("git")
-        .args([
-            "tag",
-            "-a",
-            format!("{}", version).as_str(),
-            "-m",
-            format!("\"Release {}\"", version).as_str(),
-        ])
+        .args(["commit", "-m", commit_msg.as_str()])
+        .output()
+        .expect("process failed to execute");
+    io::stdout().write_all(&output.stdout).unwrap();
+    io::stderr().write_all(&output.stderr).unwrap();
+
+    let output = Command::new("git")
+        .args(["tag", "-a", version.as_str(), "-m", commit_msg.as_str()])
         .output()
         .expect("process failed to execute");
     io::stdout().write_all(&output.stdout).unwrap();

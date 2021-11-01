@@ -70,18 +70,9 @@ pub fn start_command() -> Opts {
                 Some(t) => t.to_string(),
                 None => DEFAULT_TABLE.to_string(),
             },
-            field: match mtc.value_of("field") {
-                Some(t) => Some(t.to_string()),
-                None => None,
-            },
-            set: match mtc.value_of("set") {
-                Some(t) => Some(t.to_string()),
-                None => None,
-            },
-            bump: match mtc.value_of("bump") {
-                Some(t) => Some(t.to_string()),
-                None => None,
-            },
+            field: mtc.value_of("field").map(|t| t.to_string()),
+            set: mtc.value_of("set").map(|t| t.to_string()),
+            bump: mtc.value_of("bump").map(|t| t.to_string()),
         };
     }
 
