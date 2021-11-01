@@ -6,6 +6,7 @@ pub struct Opts {
     pub table: String,
     pub field: Option<String>,
     pub set: Option<String>,
+    pub bump: Option<String>,
 }
 
 const DEFAULT_PATH: &str = "Cargo.toml";
@@ -48,6 +49,13 @@ pub fn start_command() -> Opts {
                         .takes_value(true)
                         .requires("field")
                         .help("the new value of your field"),
+                )
+                .arg(
+                    Arg::with_name("bump")
+                        .long("bump")
+                        .short("b")
+                        .takes_value(true)
+                        .help("the type of bump you want (patch, minor, major)"),
                 ),
         )
         .get_matches();
@@ -70,6 +78,10 @@ pub fn start_command() -> Opts {
                 Some(t) => Some(t.to_string()),
                 None => None,
             },
+            bump: match mtc.value_of("bump") {
+                Some(t) => Some(t.to_string()),
+                None => None,
+            },
         };
     }
 
@@ -78,5 +90,6 @@ pub fn start_command() -> Opts {
         table: DEFAULT_TABLE.to_string(),
         field: None,
         set: None,
+        bump: None,
     }
 }
