@@ -2,6 +2,7 @@ use crate::error::Error;
 use crate::handle;
 use crate::manifest::Manifest;
 use itertools::Itertools;
+use std::io::{self, Write};
 use std::process::Command;
 
 enum Kind {
@@ -49,26 +50,33 @@ fn increment_val(val: String) -> Result<String, Error> {
 }
 
 fn update_lock() -> Result<(), Error> {
-    Command::new("cargo")
+    let output = Command::new("cargo")
         .arg("build")
-        .spawn()
+        .output()
         .expect("process failed to execute");
+    io::stdout().write_all(&output.stdout).unwrap();
     Ok(())
 }
 
 fn commit(version: String) -> Result<(), Error> {
-    let mut git = Command::new("git");
-    git.args(["add", "Cargo.toml", "Cargo.lock"])
-        .spawn()
+    let output = Command::new("git")
+        .args(["add", "Cargo.toml", "Cargo.lock"])
+        .output()
         .expect("process failed to execute");
-    git.args([
-        "tag",
-        "-a",
-        format!("{}", version).as_str(),
-        "-m",
-        format!("\"Release {}\"", version).as_str(),
-    ])
-    .spawn()
-    .expect("process failed to execute");
+    io::stdout().write_all(&output.stdout).unwrap();
+    io::stderr().write_all(&output.stderr).unwrap();
+
+    let output = Command::new("git")
+        .args([
+            "tag",
+            "-a",
+            format!("{}", version).as_str(),
+            "-m",
+            format!("\"Release {}\"", version).as_str(),
+        ])
+        .output()
+        .expect("process failed to execute");
+    io::stdout().write_all(&output.stdout).unwrap();
+    io::stderr().write_all(&output.stderr).unwrap();
     Ok(())
 }
