@@ -59,7 +59,7 @@ fn update_lock() -> Result<(), Error> {
 }
 
 fn commit(version: String) -> Result<(), Error> {
-    let commit_msg = format!("\"Release {}\"", version);
+    let commit_msg = format!("Release {}", version);
     let output = Command::new("git")
         .args(["add", "Cargo.toml", "Cargo.lock"])
         .output()
