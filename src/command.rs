@@ -7,7 +7,12 @@ pub struct Opts {
     pub table: String,
     pub field: Option<String>,
     pub set: Option<String>,
-    pub bump: Option<String>,
+    pub bump: Option<Bump>,
+}
+
+pub struct Bump {
+    pub kind: String,
+    pub quiet: bool,
 }
 
 const DEFAULT_PATH: &str = "Cargo.toml";
@@ -51,21 +56,64 @@ pub fn start_command() -> Opts {
                         .requires("field")
                         .help("the new value of your field"),
                 )
-                .arg(
-                    Arg::with_name("bump")
-                        .long("bump")
-                        .short("b")
-                        .takes_value(true)
-                        .help("the type of bump you want (patch, minor, major)"),
+                .subcommand(
+                    App::new("bump")
+                        .version(get_version().as_str())
+                        .about("Manage cargo file information")
+                        .arg(
+                            Arg::with_name("path")
+                                .long("path")
+                                .short("p")
+                                .takes_value(true)
+                                .help("The path of your cargo toml file")
+                                .default_value(DEFAULT_PATH),
+                        )
+                        .arg(
+                            Arg::with_name("type")
+                                .long("type")
+                                .short("t")
+                                .takes_value(true)
+                                .help("the type of bump you want (patch, minor, major)"),
+                        )
+                        .arg(
+                            Arg::with_name("quiet")
+                                .long("quiet")
+                                .short("q")
+                                .takes_value(false)
+                                .help(
+                                    "if this flag is enabled it will not prompt any confirmation",
+                                ),
+                        ),
                 ),
         )
         .get_matches();
 
     if let Some(mtc) = matches.subcommand_matches("man") {
-        return Opts {
-            path: match mtc.value_of("path") {
+        let mut bump_path = String::new();
+        let bump = if let Some(bump_r) = mtc.subcommand_matches("bump") {
+            bump_path = match bump_r.value_of("path") {
                 Some(t) => t.to_string(),
                 None => DEFAULT_PATH.to_string(),
+            };
+            Some(Bump {
+                kind: match bump_r.value_of("bump") {
+                    Some(t) => t.to_string(),
+                    None => "patch".to_string(),
+                },
+                quiet: bump_r.is_present("quiet"),
+            })
+        } else {
+            None
+        };
+
+        return Opts {
+            path: if bump_path.is_empty() {
+                match mtc.value_of("path") {
+                    Some(t) => t.to_string(),
+                    None => DEFAULT_PATH.to_string(),
+                }
+            } else {
+                bump_path
             },
             table: match mtc.value_of("table") {
                 Some(t) => t.to_string(),
@@ -73,7 +121,7 @@ pub fn start_command() -> Opts {
             },
             field: mtc.value_of("field").map(|t| t.to_string()),
             set: mtc.value_of("set").map(|t| t.to_string()),
-            bump: mtc.value_of("bump").map(|t| t.to_string()),
+            bump,
         };
     }
 

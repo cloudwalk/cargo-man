@@ -3,6 +3,7 @@ clap = "2.33.3"
 serde = "1.0.126"
 serde_derive = "1.0.126"
 itertools = "0.10.1"
+text_io = "0.1.9"
 
 [dependencies.toml]
 version = "0.5.8"

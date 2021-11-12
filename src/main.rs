@@ -1,3 +1,6 @@
+#[macro_use]
+extern crate text_io;
+
 mod command;
 mod error;
 mod handle;
@@ -18,8 +21,8 @@ fn main() -> Result<(), Error> {
         .unwrap();
     let mut manifest: Manifest = manifest_content.as_str().parse().unwrap();
 
-    if let Some(kind) = opts.bump {
-        let value = handle::bump(&mut manifest, opts.path, kind)?;
+    if let Some(b) = opts.bump {
+        let value = handle::bump(&mut manifest, opts.path, b.kind, b.quiet)?;
         println!("{}", value);
         return Ok(());
     }

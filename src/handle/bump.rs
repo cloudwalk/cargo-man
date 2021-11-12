@@ -11,7 +11,12 @@ enum Kind {
     Major,
 }
 
-pub fn bump(manifest: &mut Manifest, path: String, kind_str: String) -> Result<String, Error> {
+pub fn bump(
+    manifest: &mut Manifest,
+    path: String,
+    kind_str: String,
+    quiet: bool,
+) -> Result<String, Error> {
     let kind = match kind_str.to_uppercase().as_str() {
         "MINOR" => Kind::Minor,
         "MAJOR" => Kind::Major,
@@ -27,6 +32,18 @@ pub fn bump(manifest: &mut Manifest, path: String, kind_str: String) -> Result<S
         .collect_tuple()
         .unwrap();
     let new_version = handle_increment(kind, tpl)?;
+
+    if !quiet {
+        println!(
+            "Do you confirm that you want to bump this app form version {} to {}? (Y/n)",
+            current_version, new_version
+        );
+        let resp: String = read!("{}\n");
+        if resp.to_uppercase() == "N" {
+            return Ok("discard all changes".to_string());
+        }
+    }
+
     handle::write(manifest, table, path, field, new_version.clone())?;
     update_lock()?;
     commit(new_version.clone())?;
