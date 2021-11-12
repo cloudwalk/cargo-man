@@ -2,6 +2,7 @@ mod command;
 mod error;
 mod handle;
 mod manifest;
+mod version;
 
 use crate::command::start_command;
 use crate::error::Error;

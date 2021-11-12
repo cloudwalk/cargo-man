@@ -1,4 +1,5 @@
 extern crate clap;
+use crate::version::get_version;
 use clap::{App, Arg};
 
 pub struct Opts {
@@ -16,7 +17,7 @@ pub fn start_command() -> Opts {
     let matches = App::new("Cargo man")
         .subcommand(
             App::new("man")
-                .version("0.0.4")
+                .version(get_version().as_str())
                 .author("CloudWalk <cloudwalk@cloudwalk.io>")
                 .about("Manage cargo file information")
                 .arg(
