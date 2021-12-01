@@ -96,7 +96,7 @@ pub fn start_command() -> Opts {
                 None => DEFAULT_PATH.to_string(),
             };
             Some(Bump {
-                kind: match bump_r.value_of("bump") {
+                kind: match bump_r.value_of("type") {
                     Some(t) => t.to_string(),
                     None => "patch".to_string(),
                 },
